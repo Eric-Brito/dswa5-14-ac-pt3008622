@@ -12,6 +12,14 @@ module.exports = function (app) {
     var controller = app.controllers.contato;
     var Contato = app.models.contato;
 
+    app.route('/contatos')
+        .get(verificaAutenticacao, controller.listaContatos)
+        .post(verificaAutenticacao, controller.salvaContato);
+
+    app.route('/contatos/:id')
+        .get(verificaAutenticacao, controller.obtemContato)
+        .delete(verificaAutenticacao, controller.removeContato);
+
     controller.listaContatos = function(req, res) {
         Contato.find().exec().then(
             function(contatos) {
@@ -70,11 +78,5 @@ module.exports = function (app) {
         }
     };
 
-    app.route('/contatos')
-        .get(verificaAutenticacao, controller.listaContatos)
-        .post(verificaAutenticacao, controller.salvaContato);
-
-    app.route('/contatos/:id')
-        .get(verificaAutenticacao, controller.obtemContato)
-        .delete(verificaAutenticacao, controller.removeContato);
+    return controller;
 };

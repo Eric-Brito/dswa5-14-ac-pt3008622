@@ -1,6 +1,24 @@
+function verificaAutenticacao(req, res, next) {
+    if (req.isAuthenticated()) {
+        return next();
+    } else {
+        res.status('401').json('Não autorizado');
+    }
+}
+
+var verificaAutenticacao = require('../../config/auth');
+
 module.exports = function(app) {
     var Curso = app.models.curso;
-    var controller = {};
+    var controller = app.controllers.curso;
+
+    app.route('/cursos')
+        .get(verificaAutenticacao, controller.listaContatos)
+        .post(verificaAutenticacao, controller.salvaContato);
+
+     app.route('/cursos/:id')
+        .get(verificaAutenticacao, controller.obtemContato)
+        .delete(verificaAutenticacao, controller.removeContato);
 
     controller.listaCursos = function(req, res) {
         Curso.find().exec().then(

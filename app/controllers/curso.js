@@ -13,12 +13,12 @@ module.exports = function(app) {
     var controller = app.controllers.curso;
 
     app.route('/cursos')
-        .get(verificaAutenticacao, controller.listaContatos)
-        .post(verificaAutenticacao, controller.salvaContato);
+        .get(verificaAutenticacao, controller.listaCursos)
+        .post(verificaAutenticacao, controller.salvaCursos);
 
      app.route('/cursos/:id')
-        .get(verificaAutenticacao, controller.obtemContato)
-        .delete(verificaAutenticacao, controller.removeContato);
+        .get(verificaAutenticacao, controller.obtemCurso)
+        .delete(verificaAutenticacao, controller.removeCurso);
 
     controller.listaCursos = function(req, res) {
         Curso.find().exec().then(

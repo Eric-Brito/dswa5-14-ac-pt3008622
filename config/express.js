@@ -32,6 +32,8 @@ module.exports = function() {
     app.use(passport.session());
     
     app.use(helmet());
+    app.disable('x-powered-by');
+    app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14' }));
 
     //Definir Engine para a View
     app.set('view engine', 'ejs');

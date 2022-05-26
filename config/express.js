@@ -36,6 +36,7 @@ module.exports = function() {
     app.use(helmet.hidePoweredBy({ setTo: 'PHP 5.5.14' }));
     app.use(helmet.xframe());
     app.use(helmet.xssFilter());
+    app.use(helmet.nosniff());
 
     //Definir Engine para a View
     app.set('view engine', 'ejs');

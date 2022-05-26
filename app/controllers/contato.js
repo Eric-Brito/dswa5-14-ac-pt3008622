@@ -7,6 +7,7 @@ function verificaAutenticacao(req, res, next) {
 }
 
 var verificaAutenticacao = require('../../config/auth');
+var sanitize = require('mongo-sanitize');
 
 module.exports = function (app) {
     var controller = app.controllers.contato;
@@ -45,7 +46,7 @@ module.exports = function (app) {
     };
 
     controller.removeContato = function(req, res) {
-        var _id = req.params.id;
+        var _id = sanitize(req.params.id);
         Contato.deleteOne({ "_id": _id }).exec().then(
             function() {
                 res.end();

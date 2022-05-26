@@ -74,7 +74,7 @@ module.exports = function (app) {
                     res.status(500).json(erro);
                 });
         } else {
-            Contato.create(req.body).then(
+            Contato.create(dados).then(
                 function(contato) {
                     res.status(201).json(contato);
                 },

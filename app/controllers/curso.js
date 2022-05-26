@@ -58,6 +58,13 @@ module.exports = function(app) {
 
     controller.salvaCurso = function(req, res) {
         var _id = req.body._id;
+        
+        var dados = {
+            "curso" : req.body.curso,
+            "coordenador" : req.body.coordenador,
+            "emergencia" : req.body.emergencia || null
+        };
+        
         if (_id) {
             Curso.findByIdAndUpdate(_id, req.body).exec().then(
                 function(curso) {

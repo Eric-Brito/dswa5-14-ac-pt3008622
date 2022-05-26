@@ -4,6 +4,7 @@ var load = require('express-load');
 var cookieParser = require('cookie-parser');
 var session = require('express-session');
 var passport = require('passport');
+helmet = require('helmet')
 
 module.exports = function() {
     //Instância do Express
@@ -29,6 +30,8 @@ module.exports = function() {
     ));
     app.use(passport.initialize());
     app.use(passport.session());
+    
+    app.use(helmet());
 
     //Definir Engine para a View
     app.set('view engine', 'ejs');

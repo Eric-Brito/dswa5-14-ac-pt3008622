@@ -1,25 +1,6 @@
-function verificaAutenticacao(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        res.status('401').json('Não autorizado');
-    }
-}
-
-var verificaAutenticacao = require('../../config/auth');
-var sanitize = require('mongo-sanitize');
-
-module.exports = function (app) {
-    var controller = app.controllers.contato;
+module.exports = function(app) {
     var Contato = app.models.contato;
-
-    app.route('/contatos')
-        .get(verificaAutenticacao, controller.listaContatos)
-        .post(verificaAutenticacao, controller.salvaContato);
-
-    app.route('/contatos/:id')
-        .get(verificaAutenticacao, controller.obtemContato)
-        .delete(verificaAutenticacao, controller.removeContato);
+    var controller = {};
 
     controller.listaContatos = function(req, res) {
         Contato.find().exec().then(
@@ -46,7 +27,7 @@ module.exports = function (app) {
     };
 
     controller.removeContato = function(req, res) {
-        var _id = sanitize(req.params.id);
+        var _id = req.params.id;
         Contato.deleteOne({ "_id": _id }).exec().then(
             function() {
                 res.end();
@@ -58,12 +39,6 @@ module.exports = function (app) {
 
     controller.salvaContato = function(req, res) {
         var _id = req.body._id;
-        
-        var dados = {
-            "nome" : req.body.nome,
-            "email" : req.body.email,
-            "emergencia" : req.body.emergencia || null
-        };
         if (_id) {
             Contato.findByIdAndUpdate(_id, req.body).exec().then(
                 function(contato) {
@@ -74,7 +49,7 @@ module.exports = function (app) {
                     res.status(500).json(erro);
                 });
         } else {
-            Contato.create(dados).then(
+            Contato.create(req.body).then(
                 function(contato) {
                     res.status(201).json(contato);
                 },

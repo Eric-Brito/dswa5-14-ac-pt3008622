@@ -1,25 +1,24 @@
 var passport = require('passport');
 var GitHubStrategy = require('passport-github').Strategy;
+var findOrCreate = require('mongoose-findorcreate');
 var mongoose = require('mongoose');
 
 module.exports = function() {
+
     var Usuario = mongoose.model('Usuario');
 
     passport.use(new GitHubStrategy({
         clientID: 'Iv1.bde325517a049dcc',
         clientSecret: '3b7953dda5e53a353c11e016c31226d313a72965',
-        callbackURL: 'http://localhost:3000/auth/github/callback'
+        callbackURL: 'http://localhost:5000/auth/github/callback'
     }, function(acessToken, refreshToken, profile, done) {
 
-        Usuario.findOrCreate(
-            { "login" : profile.username},
-            { "nome" : profile.username},
+        Usuario.findOrCreate({ "login": profile.username }, { "nome": profile.username },
             function(erro, usuario) {
-                if(erro) {
-                    console.log(erro);
+                if (erro) {
                     return done(erro);
                 }
-            return done(null, usuario);
+                return done(null, usuario);
             }
         );
     }));
@@ -30,8 +29,8 @@ module.exports = function() {
 
     passport.deserializeUser(function(id, done) {
         Usuario.findById(id).exec()
-        .then(function(usuario) {
-            done(null, usuario);
-        });
+            .then(function(usuario) {
+                done(null, usuario);
+            });
     });
 };

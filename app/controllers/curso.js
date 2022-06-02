@@ -1,25 +1,6 @@
-function verificaAutenticacao(req, res, next) {
-    if (req.isAuthenticated()) {
-        return next();
-    } else {
-        res.status('401').json('Não autorizado');
-    }
-}
-
-var verificaAutenticacao = require('../../config/auth');
-var sanitize = require('mongo-sanitize');
-
 module.exports = function(app) {
     var Curso = app.models.curso;
-    var controller = app.controllers.curso;
-
-    app.route('/cursos')
-        .get(verificaAutenticacao, controller.listaCursos)
-        .post(verificaAutenticacao, controller.salvaCursos);
-
-     app.route('/cursos/:id')
-        .get(verificaAutenticacao, controller.obtemCurso)
-        .delete(verificaAutenticacao, controller.removeCurso);
+    var controller = {};
 
     controller.listaCursos = function(req, res) {
         Curso.find().exec().then(
@@ -46,7 +27,7 @@ module.exports = function(app) {
     };
 
     controller.removeCurso = function(req, res) {
-        var _id = sanitize(req.params.id);
+        var _id = req.params.id;
         Curso.deleteOne({ "_id": _id }).exec().then(
             function() {
                 res.end();
@@ -58,13 +39,6 @@ module.exports = function(app) {
 
     controller.salvaCurso = function(req, res) {
         var _id = req.body._id;
-        
-        var dados = {
-            "curso" : req.body.curso,
-            "coordenador" : req.body.coordenador,
-            "emergencia" : req.body.emergencia || null
-        };
-        
         if (_id) {
             Curso.findByIdAndUpdate(_id, req.body).exec().then(
                 function(curso) {
@@ -75,7 +49,7 @@ module.exports = function(app) {
                     res.status(500).json(erro);
                 });
         } else {
-            Curso.create(dados).then(
+            Curso.create(req.body).then(
                 function(curso) {
                     res.status(201).json(curso);
                 },
